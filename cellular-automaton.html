@@ -35,7 +35,7 @@ body
 
 td
 {
-  text-align: center;
+	text-align: center;
 }
 
 </style>
@@ -47,38 +47,38 @@ td
 <form method="post" action="javascript:generate(rule.value);">
 <table>
 <tr>
-        <td>Rule</td>
-        <td><input type="text" size="3" id="rule" value="110" /></td>
-        <td><input type="submit" value="Generate" /></td>
+	<td>Rule</td>
+	<td><input type="text" size="3" id="rule" value="110" /></td>
+	<td><input type="submit" value="Generate" /></td>
 </tr>
 </table>
 </form>
 
 <table id="patterns">
-        <tr>
-                <td>Pattern</td>
-                <td>111</td>
-                <td>110</td>
-                <td>101</td>
-                <td>100</td>
-                <td>011</td>
-                <td>010</td>
-                <td>001</td>
-                <td>000</td>
+	<tr>
+		<td>Pattern</td>
+		<td>111</td>
+		<td>110</td>
+		<td>101</td>
+		<td>100</td>
+		<td>011</td>
+		<td>010</td>
+		<td>001</td>
+		<td>000</td>
 		<td>&nbsp;</td>
-        </tr>
-        <tr>
-                <td>Output</td>
-                <td id="p7">&nbsp;</td>
-                <td id="p6">&nbsp;</td>
-                <td id="p5">&nbsp;</td>
-                <td id="p4">&nbsp;</td>
-                <td id="p3">&nbsp;</td>
-                <td id="p2">&nbsp;</td>
-                <td id="p1">&nbsp;</td>
-                <td id="p0">&nbsp;</td>
-		<td align="center" id="num">&nbsp;</td>
-        </tr>
+	</tr>
+	<tr>
+		<td>Output</td>
+		<td id="p7">&nbsp;</td>
+		<td id="p6">&nbsp;</td>
+		<td id="p5">&nbsp;</td>
+		<td id="p4">&nbsp;</td>
+		<td id="p3">&nbsp;</td>
+		<td id="p2">&nbsp;</td>
+		<td id="p1">&nbsp;</td>
+		<td id="p0">&nbsp;</td>
+		<td id="num">&nbsp;</td>
+	</tr>
 </table>
 
 <canvas id="bitmap" width="640" height="400">
@@ -96,31 +96,31 @@ function $(elementId)
 
 function fillTable(rule)
 {
-        for ( var i=0; i < 8; ++i ) {
+	for ( var i=0; i < 8; ++i ) {
 
 		// save values for use with bitmap
-                output[i] = rule & (0x1<<i) ? 0 : 255;
+		output[i] = rule & (0x1<<i) ? 0 : 255;
 
 		// and write the rule in the table
-                $('p' + i).innerHTML = output[i] ? 0 : 1;
-        }
+		$('p' + i).innerHTML = output[i] ? 0 : 1;
+	}
 }
 
 function check(rule)
 {
 	if ( isNaN(rule) || rule < 0 ) rule = 0;
-        if ( rule > 255 ) rule = 255;
+	if ( rule > 255 ) rule = 255;
 
-        $('rule').value = rule;
+	$('rule').value = rule;
 	$('num').innerHTML = '= ' + rule + ' (big-endian)';
 
-        return rule;
+	return rule;
 }
 
 function generate(rule)
 {
-        rule = check(rule);
-        fillTable(rule);
+	rule = check(rule);
+	fillTable(rule);
 	draw(rule);
 }
 
