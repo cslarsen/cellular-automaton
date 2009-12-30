@@ -137,35 +137,56 @@
     draw(genRules(rule));
   }
 
+  function clear(image, width, height)
+  {
+    var s = width*height*4;
+
+    for ( var p=0; p < s; ++p ) {
+      image.data[p] = 255;
+    }
+  }
+
   function draw(rules)
   {
     // set up canvas
-    var e = $('bitmap');
-    var c = e.getContext('2d');
-    var i = c.getImageData(0, 0, c.canvas.width, c.canvas.height);
+    var c = $('bitmap').getContext('2d');
+    var width  = c.canvas.width;
+    var height = c.canvas.height;
 
-    var width = 4*c.canvas.width;
-    var stop  = width*c.canvas.height;
+    var i = c.getImageData(0, 0, width, height);
 
-    // set upper right pixel
-    i.data[width-4] =
-    i.data[width-3] =
-    i.data[width-2] = 0;
-    i.data[width-1] = 255; // alpha
+    clear(i, width, height);
 
-    for ( var p = width; p < stop; p += 4 ) {
+		var x = 0;
+		var y = 0;
 
-      // read tripixel from above line
-      var left   = i.data[p-width-4] ? 0 : 1;
-      var center = i.data[p-width  ] ? 0 : 1;
-      var right  = i.data[p-width+4] ? 0 : 1;
+    // set top middle pixel
+		i.data[2*width+0] =
+		i.data[2*width+1] =
+		i.data[2*width+2] = 0;
+		i.data[2*width+3] = 255;
 
-      // lookup pattern and set RGBA
-      i.data[p+0] =
-      i.data[p+1] =
-      i.data[p+2] = rules[left<<2 | center<<1 | right];
-      i.data[p+3] = 255;
-    }
+    for ( y = 1; y < height; ++y ) {
+		for ( x = 0; x < width; ++x ) {
+			var left   = i.data[4*((y-1)*width+x-1)]  ? 0 : 1;
+
+			if ( x==0 ) {
+				left = 0;
+			}
+
+			var center = i.data[4*((y-1)*width+x+0)]  ? 0 : 1;
+			var right  = i.data[4*((y-1)*width+x+1)]  ? 0 : 1;
+
+			if ( x==(width-1) ) {
+				right = 0; i.data[4*((y-1)*width+0)] ? 0 : 1;
+			}
+
+			i.data[4*(y*width+x)+0] =
+			i.data[4*(y*width+x)+1] =
+			i.data[4*(y*width+x)+2] = rules[left<<2 | center<<1 | right];
+			i.data[4*(y*width+x)+3] = 255;
+		}
+		}
 
     c.putImageData(i, 0, 0);
   }
