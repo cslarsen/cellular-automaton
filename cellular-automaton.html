@@ -42,6 +42,7 @@
     a
     {
       text-decoration: none;
+      color: black;
     }
     </style>
   </head>
@@ -86,7 +87,7 @@
     </tr>
   </table>
 
-  <canvas id="bitmap" width="640" height="400">
+  <canvas id="bitmap" width="640" height="480">
   You must have an HTML 5 / canvas capable browser to view the output.
   </canvas>
 
@@ -96,23 +97,25 @@
 
   <script type="text/javascript"><!--
 
-  var output = [0,0,0,0,0,0,0,0];
-
   function $(elementId)
   {
     return document.getElementById(elementId);
   }
 
-  function fillTable(rule)
+  function genRules(rule)
   {
+    var rules = [0,0,0,0,0,0,0,0];
+
     for ( var i=0; i < 8; ++i ) {
 
       // save values for use with bitmap
-      output[i] = rule & (0x1<<i) ? 0 : 255;
+      rules[i] = rule & (0x1<<i) ? 0 : 255;
 
       // and write the rule in the table
-      $('p' + i).innerHTML = output[i] ? 0 : 1;
+      $('p' + i).innerHTML = rules[i] ? 0 : 1;
     }
+
+    return rules;
   }
 
   function check(rule)
@@ -129,11 +132,10 @@
   function generate(rule)
   {
     rule = check(rule);
-    fillTable(rule);
-    draw(rule);
+    draw(genRules(rule));
   }
 
-  function draw(rule)
+  function draw(rules)
   {
     // set up canvas
     var e = $('bitmap');
@@ -141,30 +143,25 @@
     var i = c.getImageData(0, 0, c.canvas.width, c.canvas.height);
 
     var width = 4*c.canvas.width;
-    var stop  = width * c.canvas.height;
+    var stop  = width*c.canvas.height;
 
     // set upper right pixel
-    i.data[width - 4] =
-    i.data[width - 3] =
-    i.data[width - 2] = 0;
-    i.data[width - 1] = 255; // alpha
-
-    var left   = 0;
-    var center = 0;
-    var right  = 0;
-    var bit    = 0;
+    i.data[width-4] =
+    i.data[width-3] =
+    i.data[width-2] = 0;
+    i.data[width-1] = 255; // alpha
 
     for ( var p = width; p < stop; p += 4 ) {
 
       // read tripixel from above line
-      left   = i.data[p - width - 4] ? 0 : 1;
-      center = i.data[p - width    ] ? 0 : 1;
-      right  = i.data[p - width + 4] ? 0 : 1;
+      var left   = i.data[p-width-4] ? 0 : 1;
+      var center = i.data[p-width  ] ? 0 : 1;
+      var right  = i.data[p-width+4] ? 0 : 1;
 
       // lookup pattern and set RGBA
       i.data[p+0] =
       i.data[p+1] =
-      i.data[p+2] = output[left<<2 | center<<1 | right];
+      i.data[p+2] = rules[left<<2 | center<<1 | right];
       i.data[p+3] = 255;
     }
 
