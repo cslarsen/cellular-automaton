@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html>
+<!--
+Created by Christian Stigen Larsen, 2010
+Put into the public domain by the author.
+-->
+<head>
+<title>Cellular Automaton</title>
+<style type="text/css">
+body
+{
+	font-family: Verdana, Helvetica, 'Sans-serif';
+}
+
+h1
+{
+	font-family: Garamond;
+}
+
+#bitmap
+{
+        border: #ccc 1px solid;
+}
+
+h1, table, canvas
+{
+	margin-bottom: 1em;
+}
+
+body
+{
+	padding: 2em;
+	background-color: #fff;
+}
+
+</style>
+</head>
+<body>
+
+<h1>Cellular Automaton</h1>
+
+<form method="post" action="javascript:generate(rule.value);">
+<table>
+<tr>
+        <td>Rule</td>
+        <td><input type="text" size="3" id="rule" value="110" /></td>
+        <td><input type="submit" value="Generate" /></td>
+</tr>
+</table>
+</form>
+
+<table>
+        <tr>
+                <td>Pattern</td>
+                <td align='center'>111</td align='center'>
+                <td align='center'>110</td align='center'>
+                <td align='center'>101</td align='center'>
+                <td align='center'>100</td align='center'>
+                <td align='center'>011</td align='center'>
+                <td align='center'>010</td align='center'>
+                <td align='center'>001</td align='center'>
+                <td align='center'>000</td align='center'>
+		<td>&nbsp;</td>
+        </tr>
+        <tr>
+                <td>Output</td>
+                <td align="center" id="p7">&nbsp;</td>
+                <td align="center" id="p6">&nbsp;</td>
+                <td align="center" id="p5">&nbsp;</td>
+                <td align="center" id="p4">&nbsp;</td>
+                <td align="center" id="p3">&nbsp;</td>
+                <td align="center" id="p2">&nbsp;</td>
+                <td align="center" id="p1">&nbsp;</td>
+                <td align="center" id="p0">&nbsp;</td>
+		<td align="center" id="num">&nbsp;</td>
+        </tr>
+</table>
+
+<canvas id="bitmap" width="640" height="400">
+You must have an HTML 5 / canvas capable browser to view the output.
+</canvas>
+
+<script type="text/javascript"><!--
+
+var output = [0,0,0,0,0,0,0,0];
+
+function $(elementId)
+{
+	return document.getElementById(elementId);
+}
+
+function fillTable(rule)
+{
+        for ( var i=0; i < 8; ++i ) {
+
+		// save values for use with bitmap
+                output[i] = rule & (0x1<<i) ? 0 : 255;
+
+		// and write the rule in the table
+                $('p' + i).innerHTML = output[i] ? 0 : 1;
+        }
+}
+
+function check(rule)
+{
+	if ( isNaN(rule) || rule < 0 ) rule = 0;
+        if ( rule > 255 ) rule = 255;
+
+        $('rule').value = rule;
+	$('num').innerHTML = '= ' + rule + ' (big-endian)';
+
+        return rule;
+}
+
+function generate(rule)
+{
+        rule = check(rule);
+        fillTable(rule);
+	draw(rule);
+}
+
+function draw(rule)
+{
+	// set up canvas
+	var e = $('bitmap');
+	var c = e.getContext('2d');
+	var i = c.getImageData(0, 0, c.canvas.width, c.canvas.height);
+
+	var line = 4*c.canvas.width;
+	var stop = 4*c.canvas.width*c.canvas.height;
+
+	// set upper right pixel
+	i.data[(line/2) - 4] =
+	i.data[(line/2) - 3] =
+	i.data[(line/2) - 2] = 0;
+	i.data[(line/2) - 1] = 255;
+
+	var left   = 0;
+	var center = 0;
+	var right  = 0;
+	var bit    = 0;
+
+	for ( var p = line; p < stop; p += 4 ) {
+
+		// read three pixels from above line
+		left   = i.data[p - line - 4] ? 0 : 1;
+		center = i.data[p - line + 0] ? 0 : 1;
+		right  = i.data[p - line + 4] ? 0 : 1;
+
+		// set RGB and alpha
+		i.data[p+0] =
+		i.data[p+1] =
+		i.data[p+2] = output[left<<2 | center<<1 | right];
+		i.data[p+3] = 255;
+	}
+
+	c.putImageData(i, 0, 0);
+}
+
+</script>
+</body>
+</html>
