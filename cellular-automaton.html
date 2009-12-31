@@ -2,7 +2,19 @@
 <html>
   <!--
   Created by Christian Stigen Larsen, 2010
-  Put into the public domain by the author.
+
+  This code features visualization of elementary
+  cellular automata, using HTML5's canvas element
+  and its javascript API.
+
+  Enter a rule number (aka, the Wolfram code) and press
+  generate to view the output.
+
+  Note that there currently are some minor bugs
+  regarding screen edga cases.
+
+  The code has been put into the public domain by
+  the author.
   -->
   <head>
 
@@ -46,6 +58,14 @@
       text-decoration: none;
       color: black;
     }
+
+    #patterns
+    {
+    }
+
+    #patterns td
+    {
+    }
     </style>
   </head>
 <body>
@@ -61,6 +81,17 @@
       </tr>
     </table>
   </form>
+
+  <p>
+    Interesting rules: 
+    <a href="javascript:generate(22);">22</a>, 
+    <a href="javascript:generate(30);">30</a>, 
+    <a href="javascript:generate(45);">45</a>, 
+    <a href="javascript:generate(57);">57</a>, 
+    <a href="javascript:generate(73);">73</a>, 
+    <a href="javascript:generate(105);">105</a>,
+    <a href="javascript:generate(110);">110</a>
+  </p>
 
   <table id="patterns">
     <tr>
@@ -126,7 +157,8 @@
     if ( rule > 255 ) rule = 255;
 
     $('rule').value = rule;
-    $('num').innerHTML = '= ' + rule + ' (big-endian)';
+    $('num').innerHTML = '= ' + rule
+      + (rule==110 ? ' (Turing-complete)' : '');
 
     return rule;
   }
@@ -164,7 +196,7 @@
 
            // handle line ends
            if ( line == 0  ) { left = 0; }
-      else if ( line == w4 ) { right = line = 0; }
+      else if ( line == w4 ) { right = line = 0; continue; }
 
       i.data[x+w4+0] =
       i.data[x+w4+1] =
