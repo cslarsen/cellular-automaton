@@ -20,14 +20,16 @@
     <title>Cellular Automaton</title>
 
     <style type="text/css">
-    body
+    body, input
     {
       font-family: Verdana, Helvetica, 'Sans-serif';
+      color: black;
+      font-size: 12pt;
     }
 
     #bitmap
     {
-      border: #ccc 1px solid;
+      border: #eee 2px solid;
       padding: none;
       margin: none;
     }
@@ -53,7 +55,12 @@
     a
     {
       text-decoration: none;
-      color: black;
+      color: #bbb;
+    }
+
+    a:hover
+    {
+      color: red;
     }
 
     .sizeButtons
@@ -64,6 +71,14 @@
     #canvasTable
     {
       border-spacing: none;
+    }
+
+    #patterns
+    {
+      width: 640px;
+      background-color: #fafafa;
+      border: #eee 2px solid;
+      padding: 5px;
     }
     </style>
   </head>
@@ -89,7 +104,7 @@
     <a href="javascript:generate(57);">57</a>, 
     <a href="javascript:generate(73);">73</a>, 
     <a href="javascript:generate(105);">105</a>,
-    <a href="javascript:generate(110);">110</a>
+    <a href="javascript:generate(110);">110</a> (universal)
   </p>
 
   <table id="patterns">
@@ -151,10 +166,15 @@
   </table>
 
   <p class="footer">
-    Made by
-    <a href="http://csl.sublevel3.org">Christian Stigen Larsen</a> | 
-    <a id='dataURI'>View image as PNG</a>
+    <small>
+     Made by
+     <a href="http://csl.sublevel3.org">Christian Stigen Larsen</a> | 
+     <a id='dataURI'>View image as PNG</a> |
+     Rendering time for <span id='renderW'></span> x
+     <span id='renderH'></span> pixels: <span id='renderMS'></span> ms
+    </small>
   </p>
+
 
   <script type="text/javascript"><!--
 
@@ -185,8 +205,7 @@
     if ( rule > 255 ) rule = 255;
 
     $('rule').value = rule;
-    $('num').innerHTML = '= ' + rule
-      + (rule==110 ? ' (computation universal)' : '');
+    $('num').innerHTML = '= ' + rule;
 
     return rule;
   }
@@ -204,6 +223,8 @@
 
   function draw(rules)
   {
+    var start = (new Date).getTime();
+
     // set up canvas
     var c = $('bitmap').getContext('2d');
     var i = c.getImageData(0, 0, c.canvas.width, c.canvas.height);
@@ -239,7 +260,13 @@
     }
 
     c.putImageData(i, 0, 0);
+
+    var stop = (new Date).getTime();
     $('dataURI').href = c.canvas.toDataURL('image/png');
+
+    $('renderW').innerHTML = c.canvas.width;
+    $('renderH').innerHTML = c.canvas.height;
+    $('renderMS').innerHTML = stop - start;
   }
 
   window.onload = generate($('rule').value);
