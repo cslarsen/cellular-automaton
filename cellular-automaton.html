@@ -218,6 +218,13 @@
     i.data[1+w4>>1] =
     i.data[2+w4>>1] = 0;
 
+    /*
+     * You can remove the annoying ``if ( line == 0 ...'' statements
+     * if you add another loop.  Also, a better approach would be
+     * to just look at and manipulate the alpha components in the image.
+     *
+     */
+
     for ( var x = 0; x < i.data.length; x += 4, line += 4 ) {
       var left  = !(i.data[x-4] & 0x1);
       var right = !(i.data[x+4] & 0x1);
