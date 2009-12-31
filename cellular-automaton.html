@@ -71,7 +71,7 @@
 
   <h1>Cellular Automaton</h1>
 
-  <form method="post" action="javascript:generate(rule.value);">
+  <form method="post" action="javascript:generate($('rule').value);">
     <table>
       <tr>
         <td>Rule</td>
@@ -129,20 +129,20 @@
       <td class='sizeButtons'>
         <a href="javascript:
           $('bitmap').width /= 2;
-          generate(rule.value);">-</a>
+          generate($('rule').value);">-</a>
         <a href="javascript:
           $('bitmap').width *= 2;
-          generate(rule.value);">+</a>
+          generate($('rule').value);">+</a>
       </td>
     </tr>
     <tr>
       <td class='sizeButtons'>
         <a href="javascript:
           $('bitmap').height /= 2;
-          generate(rule.value);">-</a>
+          generate($('rule').value);">-</a>
         <a href="javascript:
           $('bitmap').height *= 2;
-          generate(rule.value);">+</a>
+          generate($('rule').value);">+</a>
       </td>
       <td>
         &nbsp;
@@ -225,7 +225,7 @@
      *
      */
 
-    for ( var x = 0; x < i.data.length; x += 4, line += 4 ) {
+    for ( var x = 0; x < (i.data.length - w4); x += 4, line += 4 ) {
       var left  = !(i.data[x-4] & 0x1);
       var right = !(i.data[x+4] & 0x1);
 
@@ -242,7 +242,7 @@
     $('dataURI').href = c.canvas.toDataURL('image/png');
   }
 
-  window.onload = generate(rule.value);
+  window.onload = generate($('rule').value);
 
   //--></script>
   </body>

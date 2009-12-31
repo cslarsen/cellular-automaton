@@ -1,5 +1,6 @@
 Cellular automaton grapher using HTML5 canvas.
 
-Works in Google Chrome, not tested in other browsers.
+The code has been put into the public domain by the author.
 
-Code is in the public domain.
+Verified to work in:
+Chrome 4.0.249, Safari 4.0.4 and Firefox 3.5.3
