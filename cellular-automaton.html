@@ -137,12 +137,10 @@
     draw(genRules(rule));
   }
 
-  function clear(image, width, height)
+  function clear(image, color)
   {
-    var s = width*height*4;
-
-    for ( var p=0; p < s; ++p ) {
-      image.data[p] = 255;
+    for ( var p=0; p < image.data.length; ++p ) {
+      image.data[p] = color;
     }
   }
 
@@ -150,37 +148,30 @@
   {
     // set up canvas
     var c = $('bitmap').getContext('2d');
-    var width  = c.canvas.width;
-    var height = c.canvas.height;
+    var i = c.getImageData(0, 0, c.canvas.width, c.canvas.height);
 
-    var i = c.getImageData(0, 0, width, height);
+    clear(i, 255);
 
-    clear(i, width, height);
-
-		var x = 0;
-		var y = 0;
+    var w4   = c.canvas.width<<2;
+    var line = 0;
 
     // set top middle pixel
-		i.data[2*width+0] =
-		i.data[2*width+1] =
-		i.data[2*width+2] = 0;
-		i.data[2*width+3] = 255;
+    i.data[0+w4>>1] =
+    i.data[1+w4>>1] =
+    i.data[2+w4>>1] = 0;
 
-    for ( y = 1; y < height; ++y ) {
-		for ( x = 0; x < width; ++x ) {
-			var left   = i.data[4*((y-1)*width+x-1)]  ? 0 : 1;
-			var center = i.data[4*((y-1)*width+x+0)]  ? 0 : 1;
-			var right  = i.data[4*((y-1)*width+x+1)]  ? 0 : 1;
+    for ( var x = 0; x < i.data.length; x += 4, line += 4 ) {
+      var left  = !(i.data[x-4] & 0x1);
+      var right = !(i.data[x+4] & 0x1);
 
-			if ( x==0 ) { left = 0; }
-			if ( x==(width-1) ) { right = 0; }
+           // handle line ends
+           if ( line == 0  ) { left = 0; }
+      else if ( line == w4 ) { right = line = 0; }
 
-			i.data[4*(y*width+x)+0] =
-			i.data[4*(y*width+x)+1] =
-			i.data[4*(y*width+x)+2] = rules[left<<2 | center<<1 | right];
-			i.data[4*(y*width+x)+3] = 255;
-		}
-		}
+      i.data[x+w4+0] =
+      i.data[x+w4+1] =
+      i.data[x+w4+2] = rules[left<<2 | !(i.data[x] & 0x1)<<1 | right];
+    }
 
     c.putImageData(i, 0, 0);
   }
