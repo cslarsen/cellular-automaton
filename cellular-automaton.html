@@ -133,15 +133,13 @@
 
   function generate(rule)
   {
-    rule = check(rule);
-    draw(genRules(rule));
+    draw( genRules( check(rule)));
   }
 
   function clear(image, color)
   {
-    for ( var p=0; p < image.data.length; ++p ) {
+    for ( var p=0; p < image.data.length; ++p )
       image.data[p] = color;
-    }
   }
 
   function draw(rules)
