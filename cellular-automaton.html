@@ -3,23 +3,21 @@
   <!--
   Created by Christian Stigen Larsen, 2010
 
-  This code features visualization of elementary
-  cellular automata, using HTML5's canvas element
-  and its javascript API.
+  This code features visualization of elementary cellular automata,
+  using HTML5's canvas element and its javascript API.
 
-  Enter a rule number (aka, the Wolfram code) and press
-  generate to view the output.
+  Enter a rule number (aka, the Wolfram code) and press generate to
+  view the output.
 
-  Note that there currently are some minor bugs
-  regarding screen edga cases.
+  Note that there currently are some minor bugs regarding screen edge
+  cases.
 
-  The code has been put into the public domain by
-  the author.
+  The code has been put into the public domain by the author.
   -->
   <head>
 
-    <title>Cellular Automaton</title>
     <meta charset="utf-8" />
+    <title>Cellular Automaton</title>
 
     <style type="text/css">
     body
@@ -121,11 +119,15 @@
   </table>
 
   <canvas id="bitmap" width="640" height="480">
-  You must have an HTML 5 / canvas capable browser to view the output.
+    You must have an HTML 5 / canvas capable browser to view the output.
   </canvas>
 
   <p class="footer">
-  <small>Made by <a href="http://csl.sublevel3.org">Christian Stigen Larsen</a></small>
+    <small>
+      Made by
+      <a href="http://csl.sublevel3.org">Christian Stigen Larsen</a> | 
+      <a id='dataURI'>View image as PNG</a>
+    </small>
   </p>
 
   <script type="text/javascript"><!--
@@ -204,6 +206,7 @@
     }
 
     c.putImageData(i, 0, 0);
+    $('dataURI').href = c.canvas.toDataURL('image/png');
   }
 
   //--></script>
